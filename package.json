@@ -1,0 +1,33 @@
+{
+  "name": "Sistema_CRUD_NodeJS",
+  "version": "1.0.0",
+  "description": "Sistema desenvolvido em Node.JS para implementação  de CRUDS em base de dados como Teste para empresa TechPark , by : Tiago Ribeiro Santos",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiglinux/Sistema_CRUD_NodeJS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tiglinux/Sistema_CRUD_NodeJS/issues"
+  },
+  "homepage": "https://github.com/tiglinux/Sistema_CRUD_NodeJS#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.10",
+    "mysql": "^2.18.1",
+    "pg": "^8.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
