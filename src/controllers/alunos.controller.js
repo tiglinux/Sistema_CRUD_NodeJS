@@ -26,9 +26,6 @@ const createAlunos = async(req, res) => {
     const nome = req.body.nome; // ok
     const categoria = req.body.categoria; //
 
-    console.log(nome.length);
-    console.log(cpfConvertidoString.length);
-    console.log(categoria.length);
 
     if (
         cpfConvertidoString.length == 14 &&

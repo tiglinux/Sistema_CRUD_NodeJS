@@ -7,19 +7,19 @@
 
 const db = require("../database/database");
 
-//Get Tabela Alunos
+//Get Tabela Instrutores
 const getInstrutoresAll = async(req, res) => {
     const response = await db.query("SELECT * FROM instrutores"); //Seleciona todos os campos
     res.status(200).json(response.rows); //Aqui retorna as linhas
 };
 
-//Get Aluno por id
+//Get Instrutor por id
 const getInstrutorById = async(req, res) => {
     const instrutorId = parseInt(req.params.id);
     const response = await db.query("SELECT * from instrutores WHERE id = $1", [instrutorId]);
     res.status(200).json(response.rows);
 };
-//Aqui eu insiro aluno
+//Post Instrutor
 const createInstrutor = async(req, res) => {
     const cpf = req.body.cpf; // ok
     const cpfConvertidoString = cpf.toString();
@@ -38,17 +38,15 @@ const createInstrutor = async(req, res) => {
         categoria.length <= 2
     ) {
         //Linhas Criadas com sucesso
-        const {
-            rows,
-        } = await db.query(
+        const { rows } = await db.query(
             "INSERT INTO instrutores(cpf,nome,categoria)  VALUES ($1, $2, $3)", [cpf, nome, categoria]
         );
 
         res.status(201).json({
             success: true,
-            message: "Aluno cadastrado com sucesso!",
+            message: "Instrutor cadastrado com sucesso!",
             body: {
-                aluno: {
+                instrutor: {
                     cpf,
                     nome,
                     categoria,
@@ -58,14 +56,14 @@ const createInstrutor = async(req, res) => {
     } else {
         res.status(400).json({
             success: false,
-            message: "Inválido. Aluno não cadastrado.",
+            message: "Inválido. Instrutor não cadastrado.",
         });
     }
 };
 
 //FALTA ACERTAR
 const updateInstrutores = async(req, res) => {
-    const instrutorId = parseInt(req.params.id); // Aluno id é convertido para inteiro.
+    const instrutorId = parseInt(req.params.id); // Instrutor id é convertido para inteiro.
 
     const nome = req.body.nome; // ok
     const categoria = req.body.categoria; //
@@ -73,15 +71,15 @@ const updateInstrutores = async(req, res) => {
 
     await db.query("UPDATE instrutores SET cpf = $1 , nome = $ 2 , categoria = $3 WHERE id = $4 ", [cpf, nome, categoria, alunoId]);
 
-    res.status(200).send({ message: "Aluno alterado com sucesso" });
+    res.status(200).send({ message: "Instrutor alterado com sucesso" });
 };
 
 const deleteInstrutoressById = async(req, res) => {
-    const instrutorId = parseInt(req.params.id); // Aluno id é convertido para inteiro.
+    const instrutorId = parseInt(req.params.id); // Instrutor id é convertido para inteiro.
 
     await db.query('DELETE FROM instrutores WHERE id = $1', [instrutorId]);
 
-    res.status(200).send({ message: 'Aluno deletado com sucesso!', instrutorId })
+    res.status(200).send({ message: 'Instrutor deletado com sucesso!', instrutorId })
 };
 
 //Exporta para o resto do programa

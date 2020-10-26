@@ -12,6 +12,7 @@ const router = Router();
 
 //Importo function get do controller;
 const { getAlunosAll, createAlunos, getAlunoById, updateAlunos, deleteAlunosById } = require('../controllers/alunos.controller');
+const { getAulasAll, createAulas, updateAulas, deleteAulasById } = require('../controllers/aulas.controller');
 const { getInstrutoresAll, getInstrutorById, createInstrutor, updateInstrutores, deleteInstrutoressById } = require('../controllers/instrutores.controller');
 const { getVeiculosAll, getVeiculoById, createVeiculo, updateVeiculo, deleteVeiculosById } = require('../controllers/veiculos.controller');
 
@@ -40,7 +41,7 @@ router.put('/instrutores:id', updateInstrutores);
 router.delete('/instrutores/:id', deleteInstrutoressById);
 
 /** VEICULOS */
-//Mostra todos os Registros da Tabela Instrutores 
+//Mostra todos os Registros da Tabela Veiculos 
 router.get('/veiculos', getVeiculosAll);
 //Get Aluno por Id
 router.get('/veiculos/:id', getVeiculoById);
@@ -52,6 +53,14 @@ router.put('/veiculos:id', updateVeiculo);
 router.delete('/veiculos/:id', deleteVeiculosById);
 
 
+/** AULAS */
+//Mostra todos os Registros da Tabela Aulas 
+router.get('/aulas', getAulasAll);
+//Post para enviar dados e criar Aulas JSON
+router.post('/aulas', createAulas);
+
+//Deleta um registro da tabela
+router.delete('/aulas/:id', deleteAulasById);
 
 
 //Exportar rotas para todo.
