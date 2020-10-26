@@ -7,7 +7,7 @@
 
 const db = require("../database/database");
 
-//Get Tabela Instrutores
+//Get Tabela Instrutoress
 const getInstrutoresAll = async(req, res) => {
     const response = await db.query("SELECT * FROM instrutores"); //Seleciona todos os campos
     res.status(200).json(response.rows); //Aqui retorna as linhas

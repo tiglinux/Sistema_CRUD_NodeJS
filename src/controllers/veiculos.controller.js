@@ -77,7 +77,7 @@ const deleteVeiculosById = async(req, res) => {
     res.status(200).send({ message: 'Veiculo deletado com sucesso!', instrutorId })
 };
 
-//Exporta para o resto do programa
+//Export para o resto do programa 
 module.exports = {
     getVeiculosAll,
     getVeiculoById,

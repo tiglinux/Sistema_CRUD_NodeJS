@@ -23,7 +23,7 @@ const getAulaById = async(req, res) => {
 } */
 
 
-
+//aceertar detalhe
 const createAulas = async(req, res) => {
     const data_hora = req.body.data_hora;
 

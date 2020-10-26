@@ -60,7 +60,7 @@ const createAlunos = async(req, res) => {
     }
 };
 
-//FALTA ACERTAR
+//FALTA ACERTAR detalhe
 const updateAlunos = async(req, res) => {
     const alunoId = parseInt(req.params.id); // Aluno id é convertido para inteiro.
 
