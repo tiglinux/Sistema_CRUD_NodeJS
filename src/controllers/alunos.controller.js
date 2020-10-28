@@ -7,6 +7,16 @@
 
 const db = require("../database/database");
 
+const formataCPF = (cpf) => { // cpf -> string
+    //retira os caracteres indesejados
+    cpf = cpf.replace(/[^\d]/g, "");
+
+    //realizar a formatação
+    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
+
+
+
 //Get Tabela Alunos
 const getAlunosAll = async(req, res) => {
     const response = await db.query("SELECT * FROM alunos"); //Seleciona todos os campos
@@ -21,24 +31,26 @@ const getAlunoById = async(req, res) => {
 };
 //Aqui eu insiro aluno
 const createAlunos = async(req, res) => {
-    const cpf = req.body.cpf; // ok
+    const cpf = req.body.cpf;
     const cpfConvertidoString = cpf.toString();
-    const nome = req.body.nome; // ok
-    const categoria = req.body.categoria; //
+    //Aqui eu chamo uma regex para pegar os numeros e entrar com máscara. inclue . e - (ficando 14 caracteres)
+    const cpfMascara = formataCPF(cpfConvertidoString);
+    const nome = req.body.nome;
+    const categoria = req.body.categoria;
 
+    let categoriaArray = ['A', 'B', 'C', 'D', 'E', 'AB', 'AC', 'AD', 'AE'];
 
     if (
-        cpfConvertidoString.length == 14 &&
+        cpfMascara.length == 14 &&
         nome.length > 0 &&
-        nome.length <= 10 &&
-        categoria.length > 0 &&
-        categoria.length <= 2
+        nome.length <= 10 && categoriaArray.includes(categoria)
+
     ) {
         //Linhas Criadas com sucesso
         const {
             rows,
         } = await db.query(
-            "INSERT INTO alunos(cpf,nome,categoria)  VALUES ($1, $2, $3)", [cpf, nome, categoria]
+            "INSERT INTO alunos(cpf,nome,categoria)  VALUES ($1, $2, $3)", [cpfMascara, nome, categoria]
         );
 
         res.status(201).json({
@@ -46,7 +58,7 @@ const createAlunos = async(req, res) => {
             message: "Aluno cadastrado com sucesso!",
             body: {
                 aluno: {
-                    cpf,
+                    cpfMascara,
                     nome,
                     categoria,
                 },
@@ -75,6 +87,7 @@ const updateAlunos = async(req, res) => {
 
 const deleteAlunosById = async(req, res) => {
     const alunoId = parseInt(req.params.id); // Aluno id é convertido para inteiro.
+
 
     await db.query('DELETE FROM alunos WHERE id = $1', [alunoId]);
 

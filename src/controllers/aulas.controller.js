@@ -15,25 +15,35 @@ const getAulasAll = async(req, res) => {
     res.status(200).json(response.rows); //Aqui retorna as linhas
 };
 
-/* //Get Aulas por id
+//Get Aulas por id
 const getAulaById = async(req, res) => {
     const aulaId = parseInt(req.params.alunos_id);
     const response = await db.query("SELECT * from aulas WHERE id = $1", [aulaId]);
     res.status(200).json(response);
-} */
+}
 
 
 //aceertar detalhe
 const createAulas = async(req, res) => {
     const data_hora = req.body.data_hora;
+    const veiculo = req.body.veiculo;
+    const aluno = req.body.aluno;
+    const instrutor = req.body.instrutor;
 
+    const queryVeiculo = await db.query('SELECT * FROM veiculos WHERE placa = $veiculo', [veiculo]);
+    const queryAluno = await db.query('SELECT * FROM alunos WHERE placa = $veiculo', [veiculo]);
+    const queryInstrutor = await db.query('SELECT * FROM instrutores WHERE placa = $veiculo', [veiculo]);
+
+    if (queryVeiculo) {
+
+    }
     // hard to read
     let timestamp = Math.floor(+new Date() / 1000);
 
     console.log(timestamp);
 
 
-    /* //Uma aula para ser agendada deve atender os seguintes requisitos: 
+    //Uma aula para ser agendada deve atender os seguintes requisitos: 
     const responseVeiculos = await db.query("SELECT * FROM veiculos", (err, res) => {
         registrosVeiculos = res.rowCount;
     });
@@ -45,7 +55,7 @@ const createAulas = async(req, res) => {
     const responseInstrutores = await db.query("SELECT * FROM instrutores", (err, res) => {
         registrosInstrutores = res.rowCount;
 
-    }); */
+    });
 
 
     /* if (registrosVeiculos > 0 && registrosAlunos > 0 && registrosInstrutores > 0) { */
