@@ -8,11 +8,10 @@
 const db = require("../database/database");
 
 
-
 //Get Tabela Aulas
 const getAulasAll = async(req, res) => {
     const response = await db.query("SELECT * FROM aulas"); //Seleciona todos os campos
-    res.status(200).json(response.rows); //Aqui retorna as linhas
+    res.status(200).json(response); //Aqui retorna as linhas
 };
 
 //Get Aulas por id
@@ -25,50 +24,69 @@ const getAulaById = async(req, res) => {
 
 //aceertar detalhe
 const createAulas = async(req, res) => {
-    const data_hora = req.body.data_hora;
-    const veiculo = req.body.veiculo;
-    const aluno = req.body.aluno;
-    const instrutor = req.body.instrutor;
+    const placaVeiculo = req.body.veiculo;
+    const categoriaVeiculoInstrutor = req.body.categoriaVeiculoInstrutor;
+    const cpf_Aluno = req.body.aluno;
+    const cpf_Instrutor = req.body.instrutor;
+    const categoriaVeiculoAluno = req.body.categoriaVeiculoAluno; //Categoria que o Aluno quer fazer AULA
+    const categoriaVerificaAluno = await db.query('SELECT categoria FROM veiculos WHERE placa = $1 ', [placaVeiculo]);
+    const categoriaVerificaInstrutor = await db.query('SELECT categoria FROM instrutores');
+    const categoriaVerificaInstrutorIndice = await categoriaVerificaInstrutor.rows[0].categoria;
+    const dataAgendada = req.body.data_hora;
 
-    const queryVeiculo = await db.query('SELECT * FROM veiculos WHERE placa = $veiculo', [veiculo]);
-    const queryAluno = await db.query('SELECT * FROM alunos WHERE placa = $veiculo', [veiculo]);
-    const queryInstrutor = await db.query('SELECT * FROM instrutores WHERE placa = $veiculo', [veiculo]);
+    let data_atual = Date.now();
+    //Queries que verifica se os alunos,veiculo e instrutor estão cadastrados
+    const responseVeiculo = await db.query('SELECT * FROM veiculos WHERE placa = $1', [placaVeiculo]);
+    const responseAluno = await db.query('SELECT * FROM alunos WHERE  cpf = $1', [cpf_Aluno]);
+    const responseInstrutor = await db.query('SELECT * FROM instrutores WHERE  cpf = $1', [cpf_Instrutor])
 
-    if (queryVeiculo) {
+
+    //Verifica se estao cadastrados com o responses
+    if (responseVeiculo && responseAluno && responseInstrutor) {
+        let categoriaVerificaAlunoIndice = categoriaVerificaAluno.rows[0].categoria.toUpperCase(); // tem valor A
+        if (categoriaVeiculoAluno == categoriaVerificaAlunoIndice) {
+            if (categoriaVeiculoInstrutor == categoriaVerificaInstrutorIndice) {
+
+                switch (categoriaVeiculoInstrutor) {
+                    case 'A':
+                        console.log('Instrutor só pode dar aula em veículo de categoria A');
+                        break;
+                    case 'C':
+                        console.log('Instrutor só pode dar aula em veículo de categoria B ou C');
+                        break;
+                    case 'AC':
+                        console.log('Instrutor só pode dar aula em A,B ou C');
+                        break;
+                    default:
+                        res.status(400).json({
+                            success: false,
+                            message: "Instrutor só pode dar aulas em Categoria : A,C ou AC  e Categoria está Diferente dessas cadastradas!",
+                        })
+                }
+            } else if (categoriaVeiculoInstrutor != categoriaVerificaInstrutorIndice) {
+                res.status(400).json({
+                    success: false,
+                    message: "Inválido. Categoria do Veículo do Instrutor é diferente do que está cadastrada",
+                });
+            }
+            if (dataAgendada >= data_atual) {
+                await db.query("INSERT INTO aulas ");
+
+            }
+
+        }
+
 
     }
-    // hard to read
-    let timestamp = Math.floor(+new Date() / 1000);
-
-    console.log(timestamp);
 
 
-    //Uma aula para ser agendada deve atender os seguintes requisitos: 
-    const responseVeiculos = await db.query("SELECT * FROM veiculos", (err, res) => {
-        registrosVeiculos = res.rowCount;
-    });
-
-    const responseAlunos = await db.query("SELECT * FROM alunos", (err, res) => {
-        registrosAlunos = res.rowCount;
-    });
-
-    const responseInstrutores = await db.query("SELECT * FROM instrutores", (err, res) => {
-        registrosInstrutores = res.rowCount;
-
-    });
-
-
-    /* if (registrosVeiculos > 0 && registrosAlunos > 0 && registrosInstrutores > 0) { */
-    const {
-        rows,
-    } = await db.query(
-        "INSERT INTO aulas(data_hora,presente)  VALUES ($1, $2)", [data_hora, presente]
-    );
-    /*   } */
 
 };
 
 
+const updateAulas = async(req, res) => {
+
+};
 
 const deleteAulasById = async(req, res) => {
     const alunoId = parseInt(req.params.alunos_id); // Aulas id é convertido para inteiro.
@@ -83,4 +101,6 @@ module.exports = {
     getAulasAll,
     createAulas,
     deleteAulasById,
+    getAulaById,
+    updateAulas
 };

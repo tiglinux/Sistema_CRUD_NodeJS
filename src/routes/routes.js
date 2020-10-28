@@ -10,8 +10,8 @@ const { Router } = require('express');
 const router = Router();
 
 //Importo function get do controller;
-const { getAlunosAll, createAlunos, getAlunoById, updateAlunos, deleteAlunosById } = require('../controllers/alunos.controller');
-const { getAulasAll, createAulas, updateAulas, deleteAulasById } = require('../controllers/aulas.controller');
+const { getAlunosAll, createAlunos, getAlunoById, deleteAlunosById, atualizarAlunos } = require('../controllers/alunos.controller');
+const { getAulasAll, getAulaById, createAulas, updateAulas, deleteAulasById } = require('../controllers/aulas.controller');
 const { getInstrutoresAll, getInstrutorById, createInstrutor, updateInstrutores, deleteInstrutoressById } = require('../controllers/instrutores.controller');
 const { getVeiculosAll, getVeiculoById, createVeiculo, updateVeiculo, deleteVeiculosById } = require('../controllers/veiculos.controller');
 
@@ -23,7 +23,7 @@ router.get('/alunos/:id', getAlunoById);
 //Post para enviar dados e criar Alunos JSON
 router.post('/alunos', createAlunos);
 //Update atualiza Registros tabela Alunos
-router.put('/alunos:id', updateAlunos);
+router.put('/alunos/:id', atualizarAlunos);
 //Deleta um registro da tabela
 router.delete('/alunos/:id', deleteAlunosById)
 
@@ -35,7 +35,7 @@ router.get('/instrutores/:id', getInstrutorById);
 //Post para enviar dados e criar Alunos JSON
 router.post('/instrutores', createInstrutor);
 //Update atualiza Registros tabela Alunos
-router.put('/instrutores:id', updateInstrutores);
+router.put('/instrutores/:id', updateInstrutores);
 //Deleta um registro da tabela
 router.delete('/instrutores/:id', deleteInstrutoressById);
 
@@ -47,7 +47,7 @@ router.get('/veiculos/:id', getVeiculoById);
 //Post para enviar dados e criar Alunos JSON
 router.post('/veiculos', createVeiculo);
 //Update atualiza Registros tabela Alunos
-router.put('/veiculos:id', updateVeiculo);
+router.put('/veiculos/:id', updateVeiculo);
 //Deleta um registro da tabela
 router.delete('/veiculos/:id', deleteVeiculosById);
 
@@ -55,9 +55,12 @@ router.delete('/veiculos/:id', deleteVeiculosById);
 /** AULAS */
 //Mostra todos os Registros da Tabela Aulas 
 router.get('/aulas', getAulasAll);
+//Consulta aula por ID
+router.get('/aulas/:id', getAulaById);
 //Post para enviar dados e criar Aulas JSON
 router.post('/aulas', createAulas);
-
+//Update atualiza Registros tabela Alunos
+router.put('/aulas/:id', updateAulas);
 //Deleta um registro da tabela
 router.delete('/aulas/:id', deleteAulasById);
 

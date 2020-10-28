@@ -7,6 +7,7 @@
 
 const db = require("../database/database");
 
+//Regex para formatar Cpf com Máscara
 const formataCPF = (cpf) => { // cpf -> string
     //retira os caracteres indesejados
     cpf = cpf.replace(/[^\d]/g, "");
@@ -14,7 +15,6 @@ const formataCPF = (cpf) => { // cpf -> string
     //realizar a formatação
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
-
 
 
 //Get Tabela Alunos
@@ -72,17 +72,32 @@ const createAlunos = async(req, res) => {
     }
 };
 
-//FALTA ACERTAR detalhe
-const updateAlunos = async(req, res) => {
+const atualizarAlunos = async(req, res) => {
     const alunoId = parseInt(req.params.id); // Aluno id é convertido para inteiro.
+    const nome = req.body.nome;
+    const categoria = req.body.categoria;
+    const cpf = req.body.cpf;
+    const cpfConvertidoString = cpf.toString();
+    //Aqui eu chamo uma regex para pegar os numeros e entrar com máscara. inclue . e - (ficando 14 caracteres)
+    const cpfMascara = await formataCPF(cpfConvertidoString);
 
-    const nome = req.body.nome; // ok
-    const categoria = req.body.categoria; //
-    const cpf = req.body.cpf; // ok
+    let categoriaArray = ['A', 'B', 'C', 'D', 'E', 'AB', 'AC', 'AD', 'AE'];
 
-    await db.query("UPDATE alunos SET cpf = $1 , nome = $ 2 , categoria = $3 WHERE id = $4 ", [cpf, nome, categoria, alunoId]);
+    if (
+        cpfMascara.length == 14 &&
+        nome.length > 0 &&
+        nome.length <= 10 && categoriaArray.includes(categoria)
 
-    res.status(200).send({ message: "Aluno alterado com sucesso" });
+    ) {
+        await db.query("UPDATE alunos SET cpf = $1 , nome = $2 , categoria = $3 WHERE id = $4 ", [cpfMascara, nome, categoria, alunoId]);
+        res.status(200).send({ message: "Aluno alterado com sucesso" });
+    } else {
+        res.status(400).json({
+            success: false,
+            message: "Inválido. Aluno não Alterado.Dados Inválidos!",
+        });
+    }
+
 };
 
 const deleteAlunosById = async(req, res) => {
@@ -99,6 +114,6 @@ module.exports = {
     getAlunosAll,
     getAlunoById,
     createAlunos,
-    updateAlunos,
+    atualizarAlunos,
     deleteAlunosById,
 };
